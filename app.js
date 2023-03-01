@@ -19,7 +19,7 @@ app.get("/test", async (req, res) => {
 	});
 });
 
-app.post("/test", async (req, res) => {
+app.post("/callback-bai-paga", async (req, res) => {
 	corsHandler(req, res, async () => {
 		
 		const body = req.body;
