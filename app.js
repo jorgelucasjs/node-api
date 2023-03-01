@@ -1,6 +1,17 @@
 const express = require("express");
 const app = express();
+const bodyParser = require('body-parser');
 const corsHandler = require('cors')({ origin: true });
+
+
+// create application/json parser
+const jsonParser = bodyParser.json()
+
+// create application/x-www-form-urlencoded parser
+//const urlencodedParser = bodyParser.urlencoded({ extended: false })
+app.use((_req, _res, next) => {
+    next();
+});
 
 
 app.get("/test", async (req, res) => {
@@ -19,13 +30,10 @@ app.get("/test", async (req, res) => {
 	});
 });
 
-app.post("/callback-bai-paga", async (req, res) => {
+app.post("/callback-bai-paga", jsonParser, async (req, res) => {
 	corsHandler(req, res, async () => {
 		
 		const body = req.body;
-
-		console.log('TESTE DE API, POST');
-
 		res.json(body);
 
 	});
