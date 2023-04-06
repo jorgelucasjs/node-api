@@ -30,6 +30,8 @@ app.use(function(_req, _res, next) {
 
 app.post('/api/payment', async (req, res) => {
 
+	console.log('start ===> ', req.body)
+
 	try {
 
 		const apiKey = req.headers['x-mp-apikey'];
