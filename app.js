@@ -50,7 +50,65 @@ app.post("/callback-bai-paga", (req, res) => {
 
 app.post('/api/payment', async (req, res) => {
 
-	try {
+	corsHandler(req, res, () => {
+
+		const apiKey = req.headers['x-mp-apikey'];
+		const authToken = req.headers['x-mp-authenticationtoken'];	
+		const username = req.headers['x-mp-acceptancepointusername'];
+		const password = req.headers['x-mp-acceptancepointpassword'];
+		const endPoint = req.headers['end-point'];	
+		const postData = JSON.stringify(req.body);
+		const string = endPoint;
+		const index = string.indexOf('/QUAMDW-3G/');
+		const path = index !== -1 ? string.substring(index) : '';
+
+		console.log('postData', postData);
+
+		var options = {
+			'method': 'POST',
+			'hostname': 'ib.bancobai.ao',
+			'path': path,
+			'headers': {
+				'X-MP-AuthenticationToken': authToken,
+				'X-MP-AcceptancePointUsername': username,
+				'X-MP-AcceptancePointPassword': password,
+				'X-MP-ApiKey': apiKey,
+				'Content-Type': 'application/json'
+			},
+			'maxRedirects': 20
+		};
+
+		var req = https.request(options, function (response) {
+			var chunks = [];
+
+			response.on("data", function (chunk) {
+				chunks.push(chunk);
+			});
+
+			response.on("end", function (chunk) {
+				var body = Buffer.concat(chunks);
+				
+				const result = body.toString();
+
+				const obj = JSON.parse(result);
+				const confirmationUrl = obj.confirmationUrl;
+
+				console.log(result);
+				res.json({confirmationUrl: confirmationUrl});
+			});
+
+			response.on("error", function (error) {
+				console.error(error);
+				console.log(error);
+			});
+		});
+
+		req.write(postData);
+		req.end(); 
+
+	});
+
+	/* try {
 		const apiKey = req.headers['x-mp-apikey'];
 		const authToken = req.headers['x-mp-authenticationtoken'];	
 		const username = req.headers['x-mp-acceptancepointusername'];
@@ -106,7 +164,7 @@ app.post('/api/payment', async (req, res) => {
 	} catch (err) {
 		console.error(err);
 		res.status(500).send('Server error');
-	}
+	} */
 });
 
 app.listen('5000', () => console.log('Server is running'));
