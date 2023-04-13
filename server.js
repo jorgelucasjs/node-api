@@ -1,100 +1,65 @@
-const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
+/* const http = require('http');
 
-var https = require('follow-redirects').https;
-const app = express();
+// Create an HTTP server
+const server = http.createServer((req, res) => {
+  // Set up the CORS headers to allow access from any domain
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-//app.use(express.json());
+  // Set up the response headers for server-sent events
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
 
-app.use(cors());
-
-app.use(bodyParser.json());
-
-app.use(function(_req, _res, next) {
-	next();
+  // Send a message to the client every 5 seconds
+  setInterval(() => {
+    const message = `Hello from server at ${new Date().toLocaleTimeString()}`;
+    res.write(`data: ${message}\n\n`);
+  }, 5000);
 });
 
-/* app.get('/api/transaction', async (req, res) => {
-	try {
-		const todos = {
-			name: 'Jorge Dark',
-			job: 'Javascript fullstack developer'
-		};
-		res.json({ message: 'Todo created successfully' });
-	} catch (err) {
-		console.error(err);
-		res.status(500).send('Server error');
-	}
+// Start the server
+server.listen(3000, () => {
+  console.log('Server started on port 3000');
 }); */
 
-app.post('/api/payment', async (req, res) => {
 
-	try {
+const http = require('http');
 
-		const apiKey = req.headers['x-mp-apikey'];
-		const authToken = req.headers['x-mp-authenticationtoken'];	
-		const username = req.headers['x-mp-acceptancepointusername'];
-		const password = req.headers['x-mp-acceptancepointpassword'];
-		const endPoint = req.headers['end-point'];	
-		const postData = JSON.stringify(req.body);
-		const string = endPoint;
-		const index = string.indexOf('/QUAMDW-3G/');
-		const path = index !== -1 ? string.substring(index) : '';
+// Create an HTTP server
+const server = http.createServer((req, res) => {
+  // Set up the CORS headers to allow access from any domain
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-		var options = {
-			'method': 'POST',
-			'hostname': 'ib.bancobai.ao',
-			'path': path,
-			'headers': {
-				'X-MP-AuthenticationToken': authToken,
-				'X-MP-AcceptancePointUsername': username,
-				'X-MP-AcceptancePointPassword': password,
-				'X-MP-ApiKey': apiKey,
-				'Content-Type': 'application/json'
-			},
-			'maxRedirects': 20
-		};
+  // Set up the response headers for server-sent events
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
 
-		var req = https.request(options, function (response) {
-			var chunks = [];
+  if (req.method === 'POST') {
 
-			response.on("data", function (chunk) {
-				chunks.push(chunk);
-			});
-
-			response.on("end", function (chunk) {
-				var body = Buffer.concat(chunks);
-				const result = body.toString();
-				console.log(result);
-				const obj = JSON.parse(result);
-				const confirmationUrl = obj.confirmationUrl;
-
-				res.json({confirmationUrl: confirmationUrl});
-			});
-
-			response.on("error", function (error) {
-				console.error(error);
-				console.log(error);
-			});
-		});
-
-		req.write(postData);
-		req.end(); 
-
-	} catch (err) {
-		console.error(err);
-		res.status(500).send('Server error');
-	}
+    console.log()
+    let body = '';
+    req.on('data', chunk => {
+      body += chunk.toString();
+    });
+    req.on('end', () => {
+      console.log(`Received data: ${body}`);
+      res.end(`Received data: ${body}`);
+    });
+  } else {
+    // Send a message to the client every 5 seconds
+    setInterval(() => {
+      const message = `Hello from server at ${new Date().toLocaleTimeString()}`;
+      res.write(`data: ${message}\n\n`);
+    }, 5000);
+  }
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-	console.log(`Server running on port ${PORT}`);
+// Start the server
+server.listen(3000, () => {
+  console.log('Server started on port 3000');
 });
-
-
-
-
-
-
