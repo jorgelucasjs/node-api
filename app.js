@@ -1,36 +1,38 @@
-const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-
+const express = require("express");
 var https = require('follow-redirects').https;
+var fs = require('fs');
 const app = express();
+const bodyParser = require('body-parser');
+const corsHandler = require('cors')({ origin: true });
 
-//app.use(express.json());
-
-app.use(cors());
-
+app.use(bodyParser.text({ type: 'application/json' }));
 app.use(bodyParser.json());
 
+/* configurar o middleware body-parser */
 app.use(function(_req, _res, next) {
 	next();
 });
 
-/* app.get('/api/transaction', async (req, res) => {
-	try {
-		const todos = {
-			name: 'Jorge Dark',
-			job: 'Javascript fullstack developer'
-		};
-		res.json({ message: 'Todo created successfully' });
-	} catch (err) {
-		console.error(err);
-		res.status(500).send('Server error');
-	}
-}); */
+
+app.get("/test", async (req, res) => {
+	corsHandler(req, res, async () => {
+
+		const body = req.body;
+
+		const data = {
+			hello: 'Hello USER'
+		}
+
+		console.log(data);
+
+		res.json(data);
+
+	});
+});
 
 app.post("/callback-bai-paga", (req, res) => {
+	corsHandler(req, res, () => {
 
-	try {
 		const xmlData = req.body;
 
 		console.log('DATA', xmlData);
@@ -46,17 +48,16 @@ app.post("/callback-bai-paga", (req, res) => {
 		res.setHeader('Content-Type', 'application/xml');
 		// Envia a resposta como XML
 		res.send(xmlData);
-	} catch (err) {
-		console.error(err);
-		res.status(500).send('Server error');
-	}
-	
+
+	});
 });
+
+
+//=================================================================================================
 
 app.post('/api/payment', async (req, res) => {
 
-	try {
-
+	corsHandler(req, res, () => {
 		const apiKey = req.headers['x-mp-apikey'];
 		const authToken = req.headers['x-mp-authenticationtoken'];	
 		const username = req.headers['x-mp-acceptancepointusername'];
@@ -67,12 +68,8 @@ app.post('/api/payment', async (req, res) => {
 		const index = string.indexOf('/QUAMDW-3G/');
 		const path = index !== -1 ? string.substring(index) : '';
 
-	/* 	const string = stripslashes(bai_web_view_url);
-		const match = string.match(/"(.*?)"/);
-		const url = match[1];
-		console.log(url); */
-		//res.json(todo);
-  		
+		console.log(postData);
+
 		var options = {
 			'method': 'POST',
 			'hostname': 'ib.bancobai.ao',
@@ -113,15 +110,12 @@ app.post('/api/payment', async (req, res) => {
 		});
 
 		req.write(postData);
-		req.end(); 
+		req.end();
+		
 
-	} catch (err) {
-		console.error(err);
-		res.status(500).send('Server error');
-	}
+	});
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-	console.log(`Server running on port ${PORT}`);
-});
+
+
+app.listen('5000', () => console.log('Server is running'));
