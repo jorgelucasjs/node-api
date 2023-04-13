@@ -5,14 +5,7 @@ const corsHandler = require('cors')({ origin: true });
 var https = require('follow-redirects').https;
 
 
-//app.use(bodyParser.text({ type: 'application/xml' }));
-app.use(cors());
-
-app.use(bodyParser.json());
-
-app.use(function(_req, _res, next) {
-	next();
-});
+app.use(bodyParser.text({ type: 'application/xml' }));
 
 app.get("/test", async (req, res) => {
 	corsHandler(req, res, async () => {
@@ -67,8 +60,6 @@ app.post('/api/payment', async (req, res) => {
 		const string = endPoint;
 		const index = string.indexOf('/QUAMDW-3G/');
 		const path = index !== -1 ? string.substring(index) : '';
-
-		console.log('postData', postData);
 
 		var options = {
 			'method': 'POST',
