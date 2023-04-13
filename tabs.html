@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+		/* Style the buttons that will be used as tabs */
+        .tabs{
+            display: flex;
+
+        }
+		.tablinks {
+			background-color: #ddd;
+			border: none;
+			color: black;
+			padding: 10px 20px;
+			cursor: pointer;
+			font-size: 18px;
+            width: 48%;
+
+		}
+        #qrcode_btn{
+            margin-left: 1em;
+        }
+
+		/* Style the active button */
+		.active {
+			background-color: #ccc;
+		}
+
+		/* Hide the tab content by default */
+		.tabcontent {
+			display: none;
+			padding: 20px;
+			border: 1px solid #ccc;
+		}
+
+        .required{
+            color: red;
+        }
+        #bai_paga_ccNo{
+            width: 80%;
+            padding: 10px 20px;
+        }
+
+        .header_title{
+            padding: 4px;
+            font-size: 16px;
+        }
+        .form-row-wide{
+            background-color: #eee;
+        }
+
+        #finalize_order_btn{
+            background: #007bff;
+            border: none;
+            border-radius: 0;
+            color: #fff;
+            cursor: pointer;
+            display: inline-block;
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 0.0333em;
+            line-height: 1.25;
+            margin: 0;
+            opacity: 1;
+            padding: 1.1em 1.44em;
+            text-align: center;
+            text-decoration: none;
+            text-transform: uppercase;
+            transition: opacity 0.15s linear;
+            width: 100%;
+        }
+	</style>
+</head>
+<body>
+
+    <div class="form-row form-row-wide" style="width: 50%; margin: 0 auto;">
+        <h2 class="header_title">Selecione o método de pagamento</h2>
+        <div class="tabs">
+            <div class="tablinks" onclick="openTab(event, 'phone')">Número do telefone</div>
+	        <div class="tablinks" id="qrcode_btn" onclick="openTab(event, 'qrcode')">QrCode</div>
+        </div>
+
+        <!-- Tab content -->
+        <div id="phone" class="tabcontent">
+            <label class="label_bai_paga">Número do telefone<span class="required">*</span></label>
+            <input id="bai_paga_ccNo" type="number" name="phone_number" value="phone_number" autocomplete="off">
+
+            <button id="finalize_order_btn">Finalizar Pedido</button>
+        </div>
+
+        <div id="qrcode" class="tabcontent">
+            <img src="https://www.qrcode-monkey.com/img/default-preview-qr.svg" alt="QrCode">
+        </div>
+
+        <button onclick="openWindow()">OPEN WINDOW</button>
+        <button onclick="sendData()">SEND DATA</button>
+    </div>
+
+    <script>
+		function openTab(evt, tabName) {
+			// Declare all variables
+			var i, tabcontent, tablinks;
+
+			// Get all elements with class="tabcontent" and hide them
+			tabcontent = document.getElementsByClassName("tabcontent");
+			for (i = 0; i < tabcontent.length; i++) {
+				tabcontent[i].style.display = "none";
+			}
+
+			// Get all elements with class="tablinks" and remove the class "active"
+			tablinks = document.getElementsByClassName("tablinks");
+			for (i = 0; i < tablinks.length; i++) {
+				tablinks[i].className = tablinks[i].className.replace(" active", "");
+			}
+
+			// Show the current tab, and add an "active" class to the button that opened the tab
+			document.getElementById(tabName).style.display = "block";
+			evt.currentTarget.className += " active";
+		}
+
+
+
+        function openWindow(){
+            /* const popup = window.open('http://wordpress_dev.test/finalizar-compra/', "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=700,height=700");
+            popup.postMessage("hello there!", "http://wordpress_dev.test/finalizar-compra/");
+                window.addEventListener(
+                    "message",
+                    (event) => {
+                        console.log(event);
+                        if (event.origin !== "http://wordpress_dev.test/finalizar-compra/") return;
+                    },
+                false
+                ); */
+
+                const eventSource = new EventSource('http://localhost:3000');
+                console.log(eventSource);
+
+                eventSource.onmessage = (event) => {
+                console.log('Received message:', event.data);
+
+                // Handle the received message here
+                };
+                // Handle the received message here
+     };
+
+     /* const eventSource = new EventSource('http://localhost:3000');
+            console.log(eventSource);
+            eventSource.onmessage = (event) => {
+            console.log('Received message:', event.data);
+        } */
+
+
+
+        function sendData(){
+            var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+
+            var raw = JSON.stringify({
+            "name": "John",
+            "age": 30
+            });
+
+            var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            //redirect: 'follow'
+            };
+
+fetch("http://localhost:5000/post", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+        }
+        
+	</script>
+</body>
+</html>
