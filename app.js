@@ -49,15 +49,16 @@ app.post("/callback-bai-paga", (req, res) => {
 
 
 app.post('/api/payment', async (req, res) => {
+	
+	const REQ = req;
 
 	corsHandler(req, res, () => {
-
-		const apiKey = req.headers['x-mp-apikey'];
-		const authToken = req.headers['x-mp-authenticationtoken'];	
-		const username = req.headers['x-mp-acceptancepointusername'];
-		const password = req.headers['x-mp-acceptancepointpassword'];
-		const endPoint = req.headers['end-point'];	
-		const postData = JSON.stringify(req.body);
+		const apiKey = REQ.headers['x-mp-apikey'];
+		const authToken = REQ.headers['x-mp-authenticationtoken'];	
+		const username = REQ.headers['x-mp-acceptancepointusername'];
+		const password = REQ.headers['x-mp-acceptancepointpassword'];
+		const endPoint = REQ.headers['end-point'];	
+		const postData = JSON.stringify(REQ.body);
 		const string = endPoint;
 		const index = string.indexOf('/QUAMDW-3G/');
 		const path = index !== -1 ? string.substring(index) : '';
