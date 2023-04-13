@@ -23,9 +23,12 @@ app.get("/test", async (req, res) => {
 });
 
 app.post("/callback-bai-paga", (req, res) => {
+
 	corsHandler(req, res, () => {
 
 		const xmlData = req.body;
+
+		console.log(xmlData);
 		// Converte o XML para um objeto JavaScript
 		//const jsonData = fastXmlParser.parse(xmlData);
 
