@@ -172,8 +172,8 @@ app.post('/api/payment', async (req, res) => {
 	} */
 });
 
-const server = app.listen(5000, 'localhost', () => {
+/* const server = app.listen(5000, 'localhost', () => {
 	const host = server.address().address;
 	const port = server.address().port;
 	console.log(`Server listening at http://${host}:${port}`);
-  });
+  }); */
