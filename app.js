@@ -3,6 +3,10 @@ const app = express();
 const bodyParser = require('body-parser');
 const corsHandler = require('cors')({ origin: true });
 var https = require('follow-redirects').https;
+const os = require('os');
+
+
+console.log(os.hostname());
 
 
 app.use(bodyParser.text({ type: 'application/xml' }));
@@ -168,4 +172,8 @@ app.post('/api/payment', async (req, res) => {
 	} */
 });
 
-app.listen('5000', () => console.log('Server is running'));
+const server = app.listen(5000, 'localhost', () => {
+	const host = server.address().address;
+	const port = server.address().port;
+	console.log(`Server listening at http://${host}:${port}`);
+  });
